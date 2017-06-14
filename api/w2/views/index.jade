@@ -1,0 +1,52 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+  用户名
+  input(type='text' id='name')
+  密码
+  input(type='password' id='pass')
+  button(type='submit' id='btn' value='提交') 按钮
+  script(type='text/javascript').
+    $(document).ready(function(){
+      $('h1').css('color','red');
+      var data = {
+        name: $('#name').val(),
+        pass: $('#pass').val()
+      }
+      
+      $('#btn').on('click',function(){
+        //- ajax 测试跨域获取资源-cors
+        //- $.ajax({
+        //-   url: 'http://localhost:3005/users',
+        //-   data: data,
+        //-   type:'get',
+        //-   success: function(response){
+        //-     console.log('success:'+ response)
+        //-   },
+        //-   error: function(xhr){
+        //-     console.log('error')
+        //-   }
+        //- })
+        //- 动态创建script 获取资源 -jsonp
+        //- var script = document.createElement('script');
+        //- script.src = 'http://localhost:3005/users?callback=getData';
+        //- document.body.appendChild(script);
+        //- ajax的jsonp 调用方式
+        $.ajax({
+          url: 'http://localhost:3005/users',
+          jsonp: 'callback',
+          dataType: 'jsonp',
+          success: function(response){
+            console.log('success:'+ response.success)
+          },
+          error: function(xhr){
+            console.log('error')
+          }
+        })
+      });
+    });
+    function getData(data){
+      console.log(data);
+    }

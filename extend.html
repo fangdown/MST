@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>实现extend函数</title>
+</head>
+<body>
+	考察手写实现extend函数
+	<br>
+	<div>
+		思路：参数，深拷贝/浅拷贝、目标值、参数值<br>
+		核心：循环参数值，并赋值给目标值<br>
+		实现：3种情况、分直接赋值、数组赋值、对象赋值<br>
+		判断参数值类型，分数组或对象（非window、非dom节点、非原型链上属性、非undefined），再迭代循环，直至到直接赋值<br>
+		注意：若有则需把目标值中的属性带过来<br>
+	</div>
+	<script type="text/javascript">
+		/*var obj1 = {'name': 'fangdown','age': 30};
+		var obj2 = {'work': 'coolpad'};
+		function extend (target, options){
+			for(name in options){
+				target[name] = options[name];
+			}
+		}
+		extend(obj1, obj2);
+		console.log(obj1);
+		// options属性非数组或对象的复制，相互不影响
+		//  {name: "fangdown", age: 30, work: "coolpad"}
+		obj2 = {'work': 'coolpad', 'level': {'lev': 5, 'pv': 'p6'},'arr': [1,2]};
+		extend(obj1, obj2);
+		console.log(obj1);*/
+		// options 属性位数组或对象 ，更改options值会影响target值
+		// 以上是浅复制
+		// 实现深复制 - 用以解决相互不影响的问题
+		// 难点-1，判断是否为数组或对象，2，数组或对象中属性和目标属性同名
+		var copyIsArray;
+		isArray = Array.isArray || function(obj) {
+	        return type(obj) === "array";
+	    };
+	    // 定义并简写
+	    var toString = Object.prototype.toString,
+	    	hasOwn = Object.prototype.hasOwnProperty;
+	    // 判断类型
+	    var class2type  = {
+	    	'[Object Boolean]': 'boolean',
+	    	'[Object Number]': 'number',
+	    	'[Object Function]': 'function',
+	    	'[Object String]': 'string',
+	    	'[Object Object]': 'object',
+	    	'[Object Regexp]': 'regexp',
+	    	'[Object Date]': 'date',
+	    	'[Object Array]': 'array'
+	    };
+	    type = function(obj){
+	    	return obj == null ? String(obj) : class2type[toString.call(obj)] || 'object';
+	    };
+	    // 判断是否Window对象
+	    isWindow = function(obj){
+	    	return obj && typeof obj === 'object' && 'setInterval' in obj;
+	    };
+	    // 判断是否对可复制对象
+	    isPlainObject = function(obj) {
+	        if (!obj || type(obj) !== "object" || obj.nodeType || isWindow(obj)) {
+	            return false;
+	        }
+	        if (obj.constructor && !hasOwn.call(obj, "constructor")
+	                && !hasOwn.call(obj.constructor.prototype, "isPrototypeOf")) {
+	            return false;
+	        }
+	        var key;
+	        for (key in obj) {
+	        }
+	        return key === undefined || hasOwn.call(obj, key);
+	    };
+	    //Array.isArray(obj) 判断是否为数组
+	    var obj3 = {'name': 'fangdown','age': 30};
+		var obj4 = {'work': 'coolpad', 'arr': [1,2]};
+		function extendDeep (deep, target, options) {
+			for (name in options){
+				src = target[name];
+				copy = options[name];
+				if(target === options){
+					continue;
+				}
+				if(deep && (isPlainObject(copy)) || (copyIsArray = isArray(copy)) ){
+					if(copyIsArray){
+						copyIsArray = false;
+						clone = src && isArray(src) ? src : [];
+					}else{
+						clone = src && isPlainObject(src) ? src : {}
+					}
+					target[name] = extendDeep(deep, clone, copy);	
+				}else if(copy !== undefined){
+					target[name] = options[name];
+				}
+				// if(deep && copy instanceof Array){
+				// 	target[name] = extendDeep(deep, [], copy);
+				// 	console.log('target[name]:' + target[name]);
+				// }else if(deep && copy instanceof Object){
+				// 	target[name] = extendDeep(deep, {}, copy);
+				// }else {
+				// 	target[name] = options[name];
+				// }
+			}
+			return target;
+		}
+		extendDeep(true, obj3, obj4);
+	</script>
+</body>
+</html>

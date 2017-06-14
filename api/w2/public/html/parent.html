@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  我要从http://localhost:3005/html/data.html中获取数据
+  <script>
+    var state = 0;
+    var iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = 'http://localhost:3005/html/data.html';
+    document.body.appendChild(iframe);
+    if(iframe.attachEvent){
+      iframe.attachEvent('onload',loadfn);
+    }else{
+      iframe.onload = loadfn;
+    }
+    function loadfn(){
+      if(state == 0){
+        state = 1;
+        iframe.contentWindow.location = 'http://localhost:3004/html/proxy.html'
+      }else if(state == 1){
+        var data = iframe.contentWindow.name;
+        alert(data);
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>跨域</title>
+</head>
+<body>
+	1，为什么会出现跨域问题
+	2，跨域的解决方法及原理
+	产生跨域的原因：浏览器的同源策略，出于防范跨站脚本的攻击，禁止客户端脚本（如JavaScript）对不同域的服务进行跨站调用。
+	
+	浏览器的同源策略，出于防范跨站脚本的攻击，禁止客户端脚本（如 JavaScript）对不同域的服务进行跨站调用。
+	解决方法：
+	1，cors资源共享，实现方式：后台服务器设置access,允许指定ip或者全部ip能访问并获取资源
+	2，jsonp，浏览器对不同域名之间的js文件读取不做限制，利用这一点，可以访问目标网站的js文件，在该js中可返回数据
+	3，postMessage，H5新特性，post
+	4，window.name  同一个窗口下 window下的name属性公用
+	5，location.hash
+</body>
+</html>
