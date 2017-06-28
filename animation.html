@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>动画</title>
+</head>
+<body>
+	动画的种类
+	1，animate + keyframes
+	2，transition
+	3，jQuery api-fade、animate
+	4，canvas
+	5，setTimeout、setInterval
+	6，requestAnimationFrame（新的浏览器api）
+	优点：它是浏览器专门为动画提供的API，在运行时浏览器会自动优化方法的调用，并且如果页面不是激活状态下的话，动画会自动暂停，有效节省了CPU开心
+	<div id="test" style="width:1px;height:18px;background-color:green"></div>
+	<div style="height:800px"></div>
+	<script type="text/javascript">
+		window.requestAnimationFrame =  window.requestAnimationFrame || window.webkitReuestAnimationFrame || window.mozRequestAnimationFrame || window.msRequestAnimationFrame;
+		var ele = document.getElementById('test');
+		var process = 0;
+		function step(timestamp){
+			process += 1;
+			ele.style.width = process + '%';
+			ele.innerHTML = process + '%';
+			if(process < 100){
+				requestAnimationFrame(step);
+			}
+		}
+		requestAnimationFrame(step);
+	</script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>promise</title>
+</head>
+<body>
+	promise是一种形式。
+	原理：三种状态： pending、 fulfilled、rejected
+	<script type="text/javascript">
+		function callback(){
+			console.log('done');
+		}
+		console.log('before callback');
+		setTimeout(callback, 1000);
+		console.log('after callback');
+		// 最简单的promise例子
+		function test(resolve, reject){
+			var timeout = Math.random() * 2;
+			console.log('set timeout to :' + timeout + ' seconds');
+			setTimeout(function(){
+				if(timeout < 1){
+					console.log('call resolve callback');
+					resolve('200 ok');
+				}else {
+					console.log('call reject callback');
+					reject('timeout in ' + timeout + ' seconds');
+				}
+			}, timeout * 1000);
+		}
+		var p1 = new Promise(test);
+		var p2 = p1.then(function(result){
+			console.log('成功：' + result);
+		}, function(reason){
+			console.log('失败：' + reason);
+		});
+		// ajax 写成promise
+		function ajax(method, url, data){
+			var request = new XMLHttpRequest();
+			return new Promise(function(resolve, reject){
+				request.onreadystatechange = function(){
+					if(request.readyState == 4){
+						if(request.status == 200){
+							resolve(request.responseText);
+						}else{
+							reject(request.status)
+						}
+					}
+				}
+				request.open(method, url);
+				request.send(data);
+			})
+		}
+		var p = ajax('get', '../url');
+		p.then(function(data){
+			console.log(data);
+		}).catch(function(status){
+			console.log(status);
+		})
+		// 并行promise
+		var p1 = new Promise(function(resolve, reject){
+			setTimeout(function(){
+				resolve('pp')
+			},1000);
+		});
+		var p2 = new Promise(function (resolve, reject) {
+			setTimeout(resolve, 10000, 'dd');
+		})
+		Promise.all([p1, p2]).then(function(results){
+			console.log(results)
+		})
+		function test(resolve, reject){
+			var timeout = Math.random() * 2;
+			console.log('set timeout to :' + timeout + ' seconds');
+			resolve('200 ok');
+			reject('timeout in ' + timeout + ' seconds');
+		}
+		var p1 = new Promise(test);
+		var p2 = p1.then(function(result){
+			console.log('成功：' + result);
+		}, function(reason){
+			console.log('失败：' + reason);
+		});
+		// 兼容处理 -获取第一个resolve即结束
+		var p1 = new Promise(function (resolve, reject) {
+		    setTimeout(resolve, 500, 'P1');
+		});
+		var p2 = new Promise(function (resolve, reject) {
+		    setTimeout(resolve, 600, 'P2');
+		});
+		Promise.race([p1, p2]).then(function (result) {
+		    console.log(result); // 'P1'
+		});
+		// ES7 async await
+		// async 可以声明一个异步函数，此函数返回一个promise对象，await可以等待一个promise对象resolve,并拿到结果
+		async function p1(){
+			return new Promise(function(resolve, reject){
+				setTimeout(resolve, 1000, 'p1-result');
+			})
+		}
+		// p1().then(function(data){
+		// 	console.log(data)
+		// });
+		var result = await p1();
+		async function sleep(timeout) {
+		  return new Promise((resolve, reject) => {
+		    setTimeout(function() {
+		      resolve();
+		    }, timeout);
+		  });
+		}
+		await sleep(3000);
+		console.log('3')
+	</script>
+</body>
+</html>

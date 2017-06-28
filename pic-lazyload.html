@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>图片加载的极致情况</title>
+	<style>
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		ul{
+			list-style: none;
+		}
+		.list-item img{
+			display: block;
+			width: 100%;
+			height: 200px;
+		}
+	</style>
+</head>
+<body>
+	<p>测试图片加载的极致情况</p>
+	<ul>
+		<li>1，预加载-滚屏加载</li>
+		<li>2，特殊状态处理</li>
+		<li>3，上报监控</li>
+		<li>4，居中截取</li>
+		<li>5，支持webp</li>
+	</ul>
+	<div class="list-item">
+		<img onerror="log()" class="lazy" lazy-src="http://appstorecos.coolyun.com/group5/local_upload/81/81338647da0195a28b61b115e7afe1e122.png" src="http://webview.coolyun.com/game-order/static/images/1020_600_bg_orange.jpg" alt="">
+	</div>
+	<div class="list-item">
+		<img onerror="log()"class="lazy" lazy-src="http://appstorecos.coolyun.com/group5/local_upload/24/24ec440e5a96179b941f5d241b458e7f.png" src="http://webview.coolyun.com/game-order/static/images/1020_600_bg_orange.jpg" alt="">
+	</div>
+	<div class="list-item">
+		<img onerror="log()" class="lazy" lazy-src="http://appstorecos.coolyun.com/group3/local_upload/52/52fdacb125f65423267fc49258aa2038.jpg" src="http://webview.coolyun.com/game-order/static/images/1020_600_bg_orange.jpg" alt="">
+	</div>
+	<div class="list-item">
+		<img onerror="log()" class="lazy" lazy-src="http://appstorecos.coolyun.com/group4/local_upload/75/75702c4f4a23c87b9ff3423884e2ab8f.jpg" src="http://webview.coolyun.com/game-order/static/images/1020_600_bg_orange.jpg" alt="">
+	</div>
+	<div class="list-item">
+		<img onerror="log()" class="lazy" lazy-src="http://appstorecos.coolyun.com/group6/local_upload/e5/e581fb2809649dd45b84b7bcca0f9952.png" src="http://webview.coolyun.com/game-order/static/images/1020_600_bg_orange.jpg" alt="">
+	</div>
+	<div class="list-item">
+		<img onerror="log" class="lazy" lazy-src="http://appstorecos.coolyun.com/group6/local_upload/e5/e581fb2809649dd45b84b7bcca0f9952.png" src="http://webview.coolyun.com/game-order/static/images/1020_600_bg_orange.jpg" alt="">
+	</div>
+	<script type="text/javascript">
+		function lazyLoad(){
+			var clientHeight = document.documentElement.clientHeight;
+			var imgs = document.documentElement.querySelectorAll('img');
+			var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+			for(var i = 0, len = imgs.length; i < len; i++){
+				if(imgs[i].getAttribute('lazy-src') == null){
+					continue;
+				}
+				var imgTop = imgs[i].offsetTop;
+				console.log(imgTop);
+				if(clientHeight + scrollTop - imgTop > 0) {
+					imgs[i].setAttribute('src', imgs[i].getAttribute('lazy-src'));
+					imgs[i].removeAttribute('lazy-src');
+				}
+			}
+		}
+		function log () {
+			console.log('出错了，上报')
+		}
+		lazyLoad();
+		var topValue = 0;
+		var interval = null;
+		window.onscroll = function(){
+			if(interval == null) {
+				interval = setInterval(checkScrollStop,5000)
+			}
+			topValue = document.documentElement.scrollTop || document.body.scrollTop;
+			
+		}
+		function checkScrollStop(){
+			var top = document.documentElement.scrollTop || document.body.scrollTop
+			if(top == topValue){
+				clearInterval(interval);
+				interval = null;
+				lazyLoad();
+			}
+		}
+		if(!supportedWebPIsLoading) {
+		    supportedWebPIsLoading = true;
+		    var images = {
+		        basic: "data:image/webp;base64,UklGRjIAAABXRUJQVlA4ICYAAACyAgCdASoCAAEALmk0mk0iIiIiIgBoSygABc6zbAAA/v56QAAAAA=="
+		    }, $img = new Image();
+		    $img.onload = function () {
+		        supportedWebPIsLoading = false;
+		        $.cookie.set("iswebp" , +supportedWebP);
+		    };
+		    $img.onerror = function () {
+		        supportedWebP = false;
+		        supportedWebPIsLoading = false;
+		        $.cookie.set("iswebp" , +supportedWebP);
+		    };
+		    $img.src = images.basic;
+		}
+	</script>
+</body>
+</html>

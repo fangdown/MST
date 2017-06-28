@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>数组相关</title>
+</head>
+<body>
+	1，数组去重
+	<script type="text/javascript">
+		var arr =  [1,2,3,5,2,2,1,6];
+		// indexof方法-新数组indexOf循环
+		var arrNew = [];
+		for(var i = 0, len = arr.length; i < len; i++){
+			if(arrNew.indexOf(arr[i]) === -1){
+				arrNew.push(arr[i]);
+			}
+		}
+		console.log(arrNew);
+		// json方法-将已有值放入json键中
+		var obj = {};
+		var arrNew2 =  [];
+		for(var i = 0, len = arr.length; i < len; i++){
+			if (!obj[arr[i]]) {
+				obj[arr[i]] = arr[i];
+				arrNew2.push(arr[i]);
+			}
+		}
+		console.log(arrNew2);
+	</script>
+	2，数组排序
+	<script type="text/javascript">
+		var arr = [1,2,3,5,2,2,1,6];
+		// sort方法
+		arr.sort();
+		console.log(arr);
+		// 非sort方法 
+		// 按对象的key进行排序
+		var arr = [{'age': 10,'name': 'w1'},{'age': 20.2,'name': 'w2'},{'age': 1,'name': 'w3'}];
+		function sortBy(key){
+			return function(a, b){
+				if(a[key] >= b[key]){
+					return 1;
+				}else{
+					return -1;
+				}
+			}
+		}
+		arr.sort(sortBy('age'));
+		// 冒泡排序
+		var arr = [1,2,3,5,2,2,1,6];
+		for(var i = arr.length - 1; i > 0; i--){
+			for(var j = 0; j < i; j++){
+				if(arr[j] > arr[j + 1]){
+					var temp = arr[j];
+					arr.splice(j, 1, arr[j + 1]);
+					arr.splice(j + 1, 1, temp);
+				}
+			}
+		}
+		console.log(arr);
+	</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>缓存的过程</title>
+</head>
+<body>
+	第一次请求：
+	request:
+		Cache-Control:no-cache
+		Expires
+	response: 
+		ETag:W/"59364c97-3b32"
+		Last-Modified:Tue, 06 Jun 2017 06:32:55 GMT
+	第二次请求-如回车
+	request:
+		Cache-Control:max-age=0
+		If-Modified-Since:Tue, 06 Jun 2017 06:32:55 GMT
+		If-None-Match:W/"59364c97-3b32"
+	response:
+		ETag:"59364c97-3b32"
+		Last-Modified:Tue, 06 Jun 2017 06:32:55 GMT
+</body>
+</html>

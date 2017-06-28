@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>vue双向绑定的原理</title>
+</head>
+<body>
+	vue.js使用ES5提供的Object.defineProperty(obj,key,descriptor)方法,监控对数据的操作，从而可以自动触发数据同步。，并且由于是在不同的数据上触发同步，可以精确的将变更发给绑定的视图，而不是对所有的数据都执行一次检测。
+	<script type="text/javascript">
+		var a = {};
+		Object.defineProperty(a,'b',{
+			value: 123
+		});
+		console.log(a.b);
+		// 等同于
+		var a = {};
+		Object.defineProperty(a,'b',{
+			value: 123, // 属性值
+			writable: false, // 是否可写
+			enumerable: false, // 是否能在for..in循环中遍历出来或在Object.keys中列举出来
+			configurable: false //总开关，设置false不能再设置其他的（value/writable/configurable）
+		})
+		console.log(a.b);
+		// 总开关，第一次设置 false 之后，，第二次什么设置也不行了(同一个属性)
+		var a = {};
+		Object.defineProperty(a,'b',{
+			configurable: false,
+			value: 'hello-b'
+		})
+		// Object.defineProperty(a,'b',{
+		// 	configurable: false,
+		// 	value: 'hello-c'
+		// })
+		// 在descriptor中不能同时设置访问器（get和set）和wriable或value,否则会报错，就是说想用get set就不能用wriable和value中的任何一个
+		var a = {};
+		Object.defineProperty(a, 'b', {
+			set: function(newValue){
+				console.log('你要赋值给我，我的新值是' + newValue);
+				value = newValue;
+			},
+			get: function(){
+				console.log('你取我的值');
+				return value
+			}
+		})
+	</script>
+	<br>简易双向绑定实现：
+	<input type="text" id="d">
+	<span id="c"></span>
+	<script type="text/javascript">
+		var obj = {};
+		Object.defineProperty(obj,'hello',{
+			set: function(newValue){
+				document.getElementById('d').value = newValue;
+				document.getElementById('c').innerHTML = newValue;
+			}
+		})
+		// document.addEventListener('keyup', function(e){
+		// 	obj.hello = e.target.value;
+		// })
+	</script>
+	<p>
+		首先将该任务分成几个子任务：
+
+	　　 1、输入框以及文本节点与 data 中的数据绑定
+
+	　　 2、输入框内容变化时，data 中的数据同步变化。即 view => model 的变化。
+
+	　　 3、data 中的数据变化时，文本节点的内容同步变化。即 model => view 的变化。
+
+	     要实现任务一，需要对 DOM 进行编译，这里有一个知识点：DocumentFragment。
+	</p>
+	<div id="app">
+		<input type="text" v-model="text">
+		{{text}}
+	</div>
+	<script type="text/javascript">
+		// 创建代码片段，速度远远优于直接操作dom
+		// var dom = nodeToFragment(document.getElementById('app'));
+		// console.log(dom);
+		function nodeToFragment(node, vm){
+			var flag = document.createDocumentFragment();
+			var child;
+			while(child = node.firstChild){
+				compile(child, vm);
+				flag.appendChild(child);
+				console.log('child:' + child);
+			}
+			return flag;
+		}
+		//document.getElementById('app').appendChild(dom);
+		// 初始化绑定
+		function compile (node, vm) {
+			var reg =  /\{\{(.*)\}\}/;
+			if(node.nodeType === 1){ // nodeType ==1  表示元素
+				var attr = node.attributes; // 获取所有属性
+				for (var i = 0; i < attr.length; i++){
+					if(attr[i].nodeName == 'v-model'){ // 找到v-model的属性
+						var name = attr[i].nodeValue; // 取得属性值
+						//node.value = vm.data[name]; // 将data中属性为name的值赋值给该node.value
+						node.addEventListener('input',function(e){
+							vm[name] = e.target.value;
+						})
+						node.value = vm[name];
+						node.removeAttribute('v-model') //移除v-model 属性
+					}
+				}
+			}else if (node.nodeType === 3){ // 表示文本
+				if(reg.test(node.nodeValue)){
+					var name = RegExp.$1;
+					name = name.trim();
+					//node.nodeValue = vm.data[name];
+					//node.nodeValue = vm[name];
+					new Watcher(vm, node, name);
+				}
+			}
+			// 元素值 node.value
+			// 文本值 node.nodeValue
+		}
+		function observe(obj, vm){
+			Object.keys(obj).forEach(function(key){
+				defineReactive(vm, key, obj[key]);
+			})
+		}
+		function defineReactive(obj, key, val){
+			var dep = new Dep();
+			Object.defineProperty(obj, key, {
+				get: function(){
+					if(Dep.target){
+						dep.addSub(Dep.target);
+					}
+					return val;
+				},
+				set: function(newVal){
+					if(newVal === val){
+						return;
+					}
+					val = newVal;
+					dep.notify();
+					console.log(val);
+				}
+			})
+		}
+		function Dep(){
+			this.subs = [];
+		}
+		Dep.prototype = {
+			addSub: function(sub){
+				this.subs.push(sub);
+			},
+			notify: function(){
+				this.subs.forEach(function(sub){
+					sub.update();
+				})
+			}
+		}
+		function Watcher(vm, node, name){
+			Dep.target = this;
+			this.name = name;
+			this.node = node;
+			this.vm = vm;
+			this.update();
+			Dep.target = null;
+		}
+		Watcher.prototype = {
+			update: function(){
+				this.get();
+				this.node.nodeValue = this.value;
+			},
+			get: function(){
+				this.value = this.vm[this.name];
+			}
+		}
+		function Vue(options){
+			this.data = options.data;
+			var data = this.data;
+			observe(data, this);
+			var id = options.el;
+			var dom = nodeToFragment(document.getElementById(id), this);
+			document.getElementById(id).appendChild(dom);
+		}
+		var vm = new Vue({
+			el: 'app',
+			data: {
+				text: 'hello world',
+				name: 'abcde'
+			}
+		})
+	</script>
+</body>
+</html>
