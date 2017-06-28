@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>es6的十大特性</title>
+</head>
+<body>
+	1，default parameters 默认参数
+	2，template literals 模板文本
+	3，multi-line strings多行字符串
+	4,destructuring assignment 解构赋值
+	5，enhanced object literal 增强的对象文本
+	6，arrow functions 箭头函数
+	7，promises
+	8，block-scoped constructs let and const
+	9,class 类
+	10，modules 模块
+	<script type="text/javascript">
+		// 1,默认参数
+		var link = function(height, color, url){
+			var height = height || 50;
+			var color = color || 'red';
+			var url = url || 'http://www.baidu.com';
+		}
+		// ====>es6
+		var link = function (height=50, color='red', url='http://www.baidu.com') {
+			// body...
+		}
+		// 2,模板文本
+		var firstname = 'fang',lastname = 'zhiqing';
+		var name = 'your name is ' + firstname + ' ' + lastname;
+		// ====>es6
+		var name = `your name is ${firstname} ${lastname}` //注意是反引号
+		// 3，多行文本
+		var text = '1test test test '
+				 + '2test test'
+				 + '3test';
+		// ====>es6
+		var text = `1test
+					2test 
+					3test`
+		// 4，解构赋值
+		var data = $('body').data(), //data has properties house and mouse
+			house = data.house,
+			mouse = data.mouse;
+		// ====>es6
+		var {house, mouse} = $('body').data();
+		// 5，增强文本对象
+		// 暂略。。。。
+		// 6，箭头函数
+		var _this = this;
+		$('.btn').click(function(e){
+			_this.sendData();
+		});
+		// ====>es6
+		$('.btn').click((e) => {
+			this.sendData()
+		});
+		var ids = ['123', '456'];
+		var messages = ids.map(function(value, index, list){
+			console.log(list)
+			return 'id of ' + index + ' element is ' + value
+		})
+		// ====>es6
+		var messages =  ids.map((value, index, list) => `id of ${index} element is ${index}`);
+		// 7,promise
+		setTimeout(function(){
+			console.log('es5');
+		}, 1000);
+		// ====>es6
+		var wait1000 = new Promise(function(resolve, reject){
+			setTimeout(resolve, 1000);
+		}).then(function(){
+			console.log('es6');
+		})
+		var wait1000 =  new Promise((resolve, reject) = > {
+			setTimeout(resolve, 1000);
+		}).then(() => {
+			console.log('es6')
+		})
+		// 回调地狱
+		setTimeout(function(){
+			console.log('one hell');
+			setTimeout(function(){
+				console.log('two hell')
+			},1000)
+		},1000);
+		// ====>es6
+		var wait1000 = () => new Promise((resolve, reject) => setTimeout(resolve, 1000));
+		wait1000()
+			.then(()=> {
+				console.log('one');
+				return wait1000();
+			})
+			.then( ()=> {
+				console.log('two');
+			})
+		// 8,块作用域和构造
+		console.log(a);
+		var a = 10; // undefined
+		// ====>es6
+		console.log(b);
+		let b = 10; //error
+		const c = 100;
+		c = 200; //error
+		// 9, 类 class
+		// 10,modules
+		//module.js
+		module.exports = {
+			port: 3000,
+			getAccounts: function(){
+
+			}
+		}
+		var service = require('module.js');
+		service.port;
+		service.getAccounts();
+		// ====>es6
+		// module.js
+		export var port = 3000;
+		export function getAccounts(){}
+		// 引用
+		import {port, getAccounts} from 'module'
+		console.log(port);
+		console.log(getAccounts);
+		// or
+		import * as service from 'module'
+		console.log(service.port);
+		console.log(service.getAccounts());
+	</script>
+</body>
+</html>
