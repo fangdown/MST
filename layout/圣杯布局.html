@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>圣杯布局</title>
+  <style>
+    header{height: 100px;background-color: #ddd}
+    .container{height: 200px; padding:0 200px;overflow: hidden}
+    .container .middle{width: 100%;height: 200px;float: left;background-color: darkgrey}
+    .container .left{width: 200px;height: 200px; float:left;margin-left:-100%;position:relative;left:-200px;background-color: green}
+    .container .right{width: 200px;height: 200px; float: left;margin-left:-200px;position:relative;right:-200px;background-color: yellow}
+    footer{height: 50px; background-color: #ddd}
+  </style>
+</head>
+<body>
+  <header>头部内容</header>
+  <div class="container">
+    <div class="middle">000000中间弹性区中间弹性区中间弹性区中间弹性区中间弹性区中间弹性区中间弹性区中间弹性区中间弹性区中间弹性区中间弹性区中间弹性区中间弹性区中间弹性区中间弹性区</div>
+    <div class="left">左侧</div>
+    <div class="right">右侧</div>
+  </div>
+  <footer>底部区域</footer>
+</body>
+</html>

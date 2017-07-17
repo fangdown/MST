@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>双飞翼布局</title>
+  <style>
+    .clearfix:after{display: block;content: '';height:0;clear:both;}
+    header{height: 100px;background-color: #ddd}
+    .main{width: 100%;height:300px;position: relative;float: left;overflow: hidden}
+    .main .inner{margin: 0 200px;height:300px;background-color: darkgrey}
+    .left{width: 200px; height:300px;margin-left: -100%;float:left;background-color: green;}
+    .right{width: 200px; height:300px;margin-left: -200px;float:right;background-color: yellow}
+    footer{height: 50px; background-color: #ddd}
+  </style>
+</head>
+<body>
+  <header>头部内容</header>
+  <div class="container clearfix">
+    <div class="main">
+      <div class="inner">000000中间弹性区中间弹性区中间弹性区中间弹性区中间弹性区中间弹性区中间弹性区中间弹性区中间弹性区中间弹性区中间弹性区中间弹性区中间弹性区中间弹性区中间弹性区</div>
+    </div>
+    <div class="left">左侧</div>
+    <div class="right">右侧</div>
+  </div>
+  <footer>底部内容</footer>
+</body>
+</html>
