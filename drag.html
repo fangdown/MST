@@ -25,6 +25,15 @@
 			border: 1px solid #ddd;
 			cursor: move;
 		}
+		#drag2{
+			position:absolute;
+			display: block;
+			top: 150px;
+			width: 100px;
+			height: 100px;
+			border: 1px solid #ddd;
+			cursor: move;
+		}
 		p{
 			padding: 10px;
 		}
@@ -33,12 +42,53 @@
 <body>
 	<div id="parent">
 		<div id="drag"></div>
-		<p>节点1</p>
-		<p>节点2</p>
-		<p>节点3</p>
-		<p>节点4</p>
-		<p>节点5</p>
+		<div id="drag2"></div>
 	</div>
-	<script src="https://cdn.bootcss.com/require.js/2.3.3/require.min.js" data-main="js/drag-main"></script>
+	<!--<script src="https://cdn.bootcss.com/require.js/2.3.3/require.min.js" data-main="js/drag-main"></script> -->
+	<script type="text/javascript">
+		// var box = document.getElementById('drag');
+		// box.onmousedown = function(e){
+		// 	var e = e || window.event;
+		// 	var left = e.clientX - box.offsetLeft;
+		// 	var top = e.clientY - box.offsetTop;
+		// 	document.onmousemove = function(e){ //为什么不是box,因为在移动时 box还没有执行下面的改位置程序，会失去焦点，进而失败
+		// 		var e = e || window.event;
+		// 		box.style.left = e.clientX - left + 'px';
+		// 		box.style.top = e.clientY - top  + 'px';
+		// 	}
+		// }
+		// document.onmouseup = function(e){
+		// 	document.onmousemove = null;
+		// 	document.onmousedown = null;
+		// }
+		// 抽象成方法
+		function Drag(el){
+			this.init(el);
+		}
+		Drag.prototype.init = function(el){
+			this.mousedown(el)
+			return false;
+		}
+		Drag.prototype.mousedown = function(el){
+			el.onmousedown = function(e){
+				var e = e || window.event;
+				var left = e.clientX - el.offsetLeft;
+				var top = e.clientY - el.offsetTop;
+				document.onmousemove = function(e){ //为什么不是box,因为在移动时 box还没有执行下面的改位置程序，会失去焦点，进而失败,(我犯错了)
+					var e = e || window.event;
+					el.style.left = e.clientX - left + 'px';
+					el.style.top = e.clientY - top  + 'px';
+				}
+			}
+			document.onmouseup = function(e){
+				document.onmousemove = null;
+				document.onmousedown = null;
+			}
+		}
+		var box = document.getElementById('drag');
+		var box2 = document.getElementById('drag2');
+		new Drag(box)
+		new Drag(box2)
+	</script>
 </body>
 </html>

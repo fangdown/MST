@@ -34,8 +34,8 @@
 ##3，校正
 ```javascript
     // 将字符串进行过滤和校正
-///https://github.com/blowsie/Pure-JavaScript-HTML5-Parser/blob/master/htmlparser.js
-//https://github.com/mathiasbynens/he.js
+// https://github.com/blowsie/Pure-JavaScript-HTML5-Parser/blob/master/htmlparser.js
+// https://github.com/mathiasbynens/he.js
     var parse = function( str ){
 			var results = '';
 			try{

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app" data-name="dance"></div>
+  1，移动端viewport手写
+  <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0,max-scale=1,user-scaleable=no">
+  <br>2, data-xxx的作用
+  可以通过dataset获取对象值，也可以通过css属性值进行定义
+  <div id="app" class="app" data-name="dance"></div>
+  <script>
+    var obj = document.getElementById('app').dataset;
+    obj.name = 'dance';
+  </script>
+  <style>
+    .app[data-name='dance']{width:100px;height: 100px;border: 1px solid #ddd;}
+  </style>
+  <br>3,cookie session sessionStorage localStorage的区别
+  http是无状态的协议，为让服务端知道客户端已经登录，第一次登录时服务端会返回一个cookie给客户端，客户端本地保存该cookie，下一次访问该服务端带上cookie，服务端读取cookie检查用户是否登录。
+  session 是服务端记录用户会话的。
+  为了更大的存储容量引入了sessionStorage 和localStorage（5M左右），cookie为4k左右
+  使用方式：
+  sessionStorage.setItem('key','value');
+  var value = sessionStorage.getItem('key');
+  localStorage.setItem('key','value');
+  var value = localStorage.getItem('key')
+  http-only 为防止跨站脚本攻击，拒绝通过JavaScript的document.cookie来读取cookie
+  <br>4，标准模式 怪异模式
+  判断一个网页是不是标准模式可以通过一个命令
+  window.top.document.compatMode 
+  - CSS1Compat -标准
+  - BackCompat -怪异
+  jquery的方法
+  $.boxModel
+  $.support.boxModel
+  <br>5，盒模型
+  box-sizing:box-border
+  width = padding + border + width
+  <br>6, inline-block的作用
+  既可以计算宽高 又可以在水平方向上保持为一行
+  <br>7，布局
+  左右固定，中间自适应
+  <style>
+    .main{float:left;width: 100%}
+    .main-content{margin:0 210px;height: 200px;}
+    .main-left{float:left;width: 200px;background-color: green;height:100px;margin-left: -100% }
+    .main-right{float:left;width: 200px;background-color: #ddd;height: 100px;margin-left: -200px;}
+  </style>
+  <div class="main">
+    <div class="main-content"></div>
+  </div>
+  <div class="main-left"></div>
+  <div class="main-right"></div>
+  <br>8, BFC
+  bfc块级格式上下文，bfc模式下，内部元素不会影响到外部元素
+  创建BFC:
+  - float属性不为none
+  - overflow: hidden,auto,scroll,不为visiable
+  - position: abusolute or  fixed
+  - display: inline-block or table-cell or table-caption
+  作用：
+  - 清除浮动 overflow:hidden
+  - 垂直margin 合并
+  - 创建自适应两栏
+  <br>9，容器等宽
+  flex 及百分比
+  <style>
+    .div9{width: 100%;display: flex}
+    .sub9{flex-grow: 1;border:1px solid #ddd;}
+    .div9-2{width: 100%;}
+    .sub9-2{width: 30%;border:1px solid #ddd;display: inline-block}
+  </style>
+  <div class="div9">
+    <div class="sub9">1</div>
+    <div class="sub9">2</div>
+    <div class="sub9">3</div>
+  </div>
+  <div class="div9-2">
+    <div class="sub9-2">4</div>
+    <div class="sub9-2">5</div>
+    <div class="sub9-2">6</div>
+  </div>
+  <br>10， 函数中arguments是什么，是数组吗，若不是如何转化成真正的数组
+  是参数，不是数组，
+  <script>
+    function fun(){
+      console.log(arguments);
+      var args = Array.prototype.slice.call(arguments)
+      console.log(args);
+    }
+    fun(1,2,3)
+  </script>
+  <br>11， 列举typeof类型，如何区分[] 和 {}
+  string,number,boolean,object,function,undefined
+  <script>
+    var arr = [1,2,3];
+    var obj = {name:'react'}
+    typeof arr   // object
+    typeof obj // object
+    Object.prototype.toString.call(arr) // [object Array]
+    Object.prototype.toString.call(obj) // [object Object]
+  </script>
+  <br>12, function中的call apply bind有什么区别
+  call  参数是逗号分隔的字符串  apply 参数数组 bind返回的是一个函数需要()调用
+  <script> 
+    var xw = {
+      name: '小红',
+      age: '30',
+      say:function(school,grade){
+        console.log( this.name + ',' + this.age + ',' + school + ',' + grade)
+      }
+    }
+    var xh = {
+      name: '小王',
+      age: '19'
+    }
+    xw.say.call(xh,'scoo','6');
+    xw.say.apply(xh,['tcoo','5'])
+    xw.say.bind(xh,'bcoo', '4')()
+  </script>
+  <br>13，请设计一个算法。将两个有序数组合并为一个数组。请不要使用concat以及sort方法。
+  <script> 
+    function merge (left, right){
+      var result =  [],
+          il = 0,
+          ir = 0;
+      while(il < left.length && ir < right.length) {
+        if(left[il] < right[ir]) {
+          result.push(left[il++]);
+        } else {
+          result.push(right[ir++])
+        }
+      }
+      console.log(left[il]);
+      result = result.concat(left[il] ? left.slice(il) : right.slice(ir));
+      return result;
+    }
+    var arr1 = [1,5,7];
+    var arr2 = [2,8,9,4];
+    var result = merge(arr1, arr2);
+  </script>
+  <br>14，闭包
+  1,func[2]();执行结果是什么？
+  2,(function (){
+    var i = 9;
+    func[2](); 
+})();
+3,将第一个代码改一下使funcs[2]()输出2
+  <script>
+    var func = [];
+    for(var i = 0; i < 5; i++){
+      func[i] = function () {
+        console.log(i);
+      }
+    }
+    //  for循环中 有函数引用，能够访问另一个函数的变量的函数就是闭包，闭包时i不会被销毁
+    var func =  [];
+    for(var i = 0; i < 5; i++){
+      (function(i){
+        func[i] =function(){
+          console.log(i)
+        }
+      })(i)
+    }
+    // let 也可以实现
+    var func = [];
+    for(let i = 0; i< 5; i++){
+      func[i] =function() {
+        console.log(i)
+      }
+    }
+  </script>
+  <br>15， this的使用
+  如何使a返回b的值
+  <script> 
+    function a () {
+      return this.name;
+    }
+    var b = { name: 'this is b.name'}
+    // 方法1
+    this.name = b.name;
+    a();
+    // 方法2
+    a.call(this, b);
+  </script>
+  <br> 17, class 类继承
+  <script>
+    // 'use strict'
+    // class A {
+    //   public: void say();
+    // }
+    // class B extends A{}
+    function A(){}
+    A.prototype.say =function(){console.log('hello')}
+    function B(){}
+    B.prototype = new A();
+    var b = new B();
+    b.say()
+  </script>
+  <br>18, 二分查找
+  <script>
+    function bindSearch(data, item , start, end){
+      var start = start || 0,
+          end = end || data.length - 1,
+          middle = Math.floor((start + end ) / 2);
+      if(item = data[middle]){
+        return middle;
+      }else if( item < data[middle]){
+        return bindSearch(data,item,start, middle -1);
+      }else {
+        return bindSearch(data, item, middle + 1, end);
+      }
+    }
+    var arr=[34,12,5,123,2,745,32,4];
+    bindSearch(arr, 5)
+  </script>
+</body>
+</html>
